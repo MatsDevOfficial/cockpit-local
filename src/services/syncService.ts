@@ -26,8 +26,8 @@ class SyncService {
   private _isRunning = false;
 
   constructor() {
-    // Start sync process when service is initialized
-    this.startPeriodicSync();
+    // Sync disabled in local mode (PostgreSQL is the source of truth)
+    console.log('Sync service initialized (local mode - sync disabled)');
   }
 
   startPeriodicSync(): void {

@@ -58,17 +58,13 @@ if [ ! -f ".env" ]; then
         # Replace the placeholder with actual secure secret
         if [[ "$OSTYPE" == "darwin"* ]]; then
             # macOS
-            sed -i '' "s/your_super_secure_jwt_secret_key_min_32_chars_long_1234567890abcdef/$JWT_SECRET/" .env
+            sed -i '' "s/change_me_to_a_random_secret_at_least_32_chars/$JWT_SECRET/" .env
         else
             # Linux
-            sed -i "s/your_super_secure_jwt_secret_key_min_32_chars_long_1234567890abcdef/$JWT_SECRET/" .env
+            sed -i "s/change_me_to_a_random_secret_at_least_32_chars/$JWT_SECRET/" .env
         fi
         
         echo -e "${GREEN}✅ Created .env file from template${NC}"
-        echo -e "${YELLOW}⚠️  Please edit .env file and add your API keys:${NC}"
-        echo "   - AIRTABLE_API_KEY"
-        echo "   - AIRTABLE_BASE_ID"
-        echo "   - LOOPS_API_KEY"
     else
         echo -e "${RED}❌ .env.template not found${NC}"
         exit 1
@@ -90,7 +86,7 @@ fi
 # Create frontend .env.local if it doesn't exist
 echo -e "\n${YELLOW}Setting up frontend environment...${NC}"
 if [ ! -f "frontend/.env.local" ]; then
-    echo "NEXT_PUBLIC_API_URL=http://localhost:5000/api" > frontend/.env.local
+    echo "NEXT_PUBLIC_API_URL=http://localhost:3001/api" > frontend/.env.local
     echo -e "${GREEN}✅ Created frontend/.env.local${NC}"
 else
     echo -e "${GREEN}✅ Frontend .env.local already exists${NC}"
@@ -111,7 +107,8 @@ cd ..
 
 echo -e "\n${GREEN}🎉 Setup completed successfully!${NC}"
 echo -e "\n${BLUE}Next steps:${NC}"
-echo "1. Edit .env file and add your API keys"
-echo "2. Set up your Airtable base (see SETUP_README.md)"
-echo "3. Run './run-local.sh' to start the servers"
-echo -e "\n${YELLOW}📋 See SETUP_README.md for detailed setup instructions${NC}"
+echo "1. Start PostgreSQL: ./scripts/start-postgres.sh"
+echo "2. Run migrations: npm run migrate"
+echo "3. Seed data: psql -U daydream_user -d daydream_portal -f database/seed-data.sql"
+echo "4. Run './run-local.sh' to start the servers"
+echo -e "\n${YELLOW}Login: any email in the seed data works. Magic links are printed to the terminal.${NC}"

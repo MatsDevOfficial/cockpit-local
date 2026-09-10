@@ -6,8 +6,8 @@ class SlackSyncJobService {
   private _isRunning = false;
 
   constructor() {
-    // Start sync process when service is initialized
-    this.startPeriodicSync();
+    // Slack sync disabled in local mode
+    console.log('Slack sync job initialized (local mode - sync disabled)');
   }
 
   startPeriodicSync(): void {

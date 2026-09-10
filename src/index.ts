@@ -11,10 +11,6 @@ import securityRoutes from './routes/security';
 import healthRoutes from './routes/health';
 import signupRoutes from './routes/signups';
 import { databaseService } from './services/databaseService';
-import { syncService } from './services/syncService';
-import { slackSyncJobService } from './services/slackSyncJobService';
-import { createSlackSyncTable } from './utils/createSlackSyncTable';
-import { listSlackChannels } from './utils/testSlackChannels';
 import { apiRateLimit, securityMonitoringMiddleware } from './middleware/rateLimiting';
 import { sanitizeQueryParams } from './middleware/inputValidation';
 import { securityHeaders, apiSecurityHeaders, corsOptions, securityAuditMiddleware, requestTimeoutMiddleware } from './middleware/securityHeaders';
@@ -124,18 +120,7 @@ async function startServer() {
       console.warn('Database service not initialized, continuing without it...');
     } else {
       console.log('Database service initialized successfully');
-      
-      // Create Slack sync table if needed
-      console.log('Setting up Slack sync table...');
-      await createSlackSyncTable();
-
-      // Start sync service
-      console.log('Starting sync service...');
-      // syncService is already started in its constructor
-      
-      // Start Slack sync job
-      console.log('Starting Slack sync job...');
-      // slackSyncJobService is already started in its constructor
+      console.log('Running in local mode (PostgreSQL only, no Airtable sync)');
     }
 
     app.listen(PORT, () => {
@@ -154,8 +139,6 @@ async function startServer() {
 process.on('SIGTERM', async () => {
   console.log('SIGTERM received, shutting down gracefully...');
   try {
-    syncService.stopPeriodicSync();
-    slackSyncJobService.stopPeriodicSync();
     await databaseService.close();
     process.exit(0);
   } catch (error) {
@@ -167,8 +150,6 @@ process.on('SIGTERM', async () => {
 process.on('SIGINT', async () => {
   console.log('SIGINT received, shutting down gracefully...');
   try {
-    syncService.stopPeriodicSync();
-    slackSyncJobService.stopPeriodicSync();
     await databaseService.close();
     process.exit(0);
   } catch (error) {
