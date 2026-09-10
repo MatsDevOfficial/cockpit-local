@@ -13,16 +13,9 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./database/init:/docker-entrypoint-initdb.d
-      - ./database/ssl:/var/lib/postgresql/ssl:ro
       - ./setup-db.sql:/docker-entrypoint-initdb.d/02_setup_complete.sql
     command: >
       postgres
-      -c ssl=on
-      -c ssl_cert_file=/var/lib/postgresql/ssl/server.crt
-      -c ssl_key_file=/var/lib/postgresql/ssl/server.key
-      -c ssl_ca_file=/var/lib/postgresql/ssl/ca.crt
-      -c ssl_ciphers='ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256'
-      -c ssl_prefer_server_ciphers=on
       -c log_connections=on
       -c log_disconnections=on
       -c log_statement='all'
